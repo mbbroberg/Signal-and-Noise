@@ -17,8 +17,8 @@
 
 [global]
 
-; default engine type for Linux subsystems
-ioengine=libaio
+ioengine=mmap
+direct=1
 directory=/home/infinio/testing/
 
 
