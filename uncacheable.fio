@@ -1,0 +1,62 @@
+;;;;;;;
+; Content-based cache testing
+; by @mjbrender
+; Last edited 7/29/2014
+;
+; Goal: Generate a workload that is non-optimal for content-based caching
+;       such as the caching layer created by Infinio (http://infinio.com)
+;
+; Reason: Not all workloads are ideal for caching. Being able to generate
+;         non-optimal workloads as part of a test suite is ideal.
+;
+; Environmental notes:
+;         * Requires directory at exact location
+;         * Creates two 512MB files (requires 1GB free per run)
+;         * Runs for 5 minutes. Designed to be scheduled by cron.
+;;;;;;;
+
+[global]
+
+; default engine type for Linux subsystems
+ioengine=libaio
+directory=/home/infinio/testing/
+
+
+; ---- Run for how long? -----
+; ---- 5 minutes ---
+time_based
+runtime=300
+
+; ---- simplify output ---
+; don't need the granular output of latencies or disk stats
+disable_clat=1
+disable_slat=1
+clat_percentiles=0
+disk_util=0
+group_reporting
+
+
+[uncacheable read workload]
+
+; ----- IO type -----
+; Change the offset every 4th IO, making it less cacheable
+; Queue length will never get lower than 12 IO before sending read request
+; randrepeat allows for very few cache hits but not totally missing (more real)
+rw=randread
+randrepeat=1
+size=512m
+iodepth=32
+iodepth_low=12
+norandommap
+ba=1k
+blocksize_range=4k:32k
+numjobs=2
+
+
+[uncacheable write noise]
+
+; ----- IO type -----
+size=4k
+rw=randwrite
+rate_iops=50
+norandommap
