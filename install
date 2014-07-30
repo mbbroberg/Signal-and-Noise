@@ -1,0 +1,13 @@
+wget http://archive.ubuntu.com/ubuntu/pool/universe/f/fio/fio_2.1.11.orig.tar.gz
+tar -xvf
+cd
+sudo ./configure
+sudo make
+
+:: copy files over here ::
+
+crontab -e */5 * * * * fio /home/infinio/workloads/uncacheable.fio
+
+
+
+while true; do RUNTIME=$(((RANDOM % 7) * 100)) fio cacheable.fio; sle00; done
