@@ -17,7 +17,7 @@
 
 [global]
 
-ioengine=mmap
+ioengine=sync
 direct=1
 directory=/home/infinio/testing/
 
@@ -45,8 +45,6 @@ rate_iops=1000
 rw=randread
 randrepeat=1
 size=512m
-iodepth=32
-iodepth_low=12
 norandommap
 ba=1k
 blocksize_range=4k:32k
@@ -58,5 +56,4 @@ numjobs=2
 ; ----- IO type -----
 size=3g
 rw=randwrite
-rate_iops=50
 norandommap
