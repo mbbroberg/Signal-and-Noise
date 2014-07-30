@@ -1,0 +1,47 @@
+;;;;;;;
+; Content-based cache testing
+; by Matt Brender @mjbrender
+; Last edited 7/30/2014
+;
+; Goal: Generate a workload that is optimal for content-based caching
+;       such as the caching layer created by Infinio (http://infinio.com)
+;
+; Reason: Many workloads maintain a 65%-90% cache hit rate. This test
+;         will provide a highly cacheable workload that simulates these env.
+;
+; Environmental notes:
+;         * Requires 'seed' file at exact location
+;         * Generates IO based on seed file
+;         * Designed to be scheduled by cron or run in while loop
+;;;;;;;
+
+[mixed cacheable]
+
+filename=/home/infinio/testing/windows7_iso
+direct=1       ; bypass OS level buffers
+
+
+; ---- Run for how long? -----
+; Run with this: RUNTIME=$(((RANDOM % 7) * 100))
+; makes a random amount of minutes between 1-12
+time_based
+runtime=${RUNTIME}
+
+; ---- simplify output ---
+; don't need the granular output of latencies or disk stats
+disable_clat=1
+disable_slat=1
+clat_percentiles=0
+disk_util=0
+group_reporting
+
+
+; ----- IO type -----
+rwmixread=90    ; IO is 90:10 R:W ratio
+randrepeat=1    ; allows for non-sequential distribution of hits
+norandommap
+blocksize_range=4k:32k
+
+
+numjobs=10      ; Create 10 separate instances sharing same seed file
+rate_iops=2000  ; Throttle the max IOPS to ~2MB throughput
