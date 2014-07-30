@@ -23,7 +23,6 @@ directory=/home/infinio/testing/
 
 
 ; ---- Run for how long? -----
-; ---- 5 minutes ---
 time_based
 runtime=${RUNTIME}
 
