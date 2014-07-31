@@ -1,3 +1,4 @@
+scp infinio@10.100.24.65:/home/infinio/fio/fio-2.1.10.tar.gz .
 wget http://archive.ubuntu.com/ubuntu/pool/universe/f/fio/fio_2.1.11.orig.tar.gz
 tar -xvf
 cd
@@ -10,4 +11,4 @@ crontab -e */5 * * * * fio /home/infinio/workloads/uncacheable.fio
 
 
 
-while true; do RUNTIME=$(((RANDOM % 7) * 100)) fio cacheable.fio; sle00; done
+while true; do RUNTIME=$(((RANDOM % 7) * 100)) fio [un]cacheable.fio; sleep 100; done
