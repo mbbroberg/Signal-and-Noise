@@ -1,7 +1,7 @@
 ;;;;;;;
 ; Content-based cache testing
 ; by @mjbrender
-; Last edited 7/30/2014
+; Last edited 8/8/2014
 ;
 ; Goal: Generate a workload that is non-optimal for content-based caching
 ;       such as the caching layer created by Infinio (http://infinio.com)
@@ -12,14 +12,14 @@
 ; Environmental notes:
 ;         * Requires directory at exact location
 ;         * Creates two 512MB files (requires 1GB free per run)
-;         * Runs for 5 minutes. Designed to be scheduled by cron.
+;         * Runs for based on RUNTIME variable, defined at command call or to be scheduled by cron.
 ;;;;;;;
 
 [global]
 
 ioengine=sync
 direct=1
-directory=/home/infinio/testing/
+filename=windows7_iso2
 
 
 ; ---- Run for how long? -----

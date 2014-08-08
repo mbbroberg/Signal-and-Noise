@@ -1,14 +1,18 @@
-scp infinio@10.100.24.65:/home/infinio/fio/fio-2.1.10.tar.gz .
 wget http://archive.ubuntu.com/ubuntu/pool/universe/f/fio/fio_2.1.11.orig.tar.gz
 tar -xvf
 cd
 sudo ./configure
 sudo make
 
-:: copy files over here ::
 
-crontab -e */5 * * * * fio /home/infinio/workloads/uncacheable.fio
+# enable cronjobs
+sudo update-rc.d cron defaults
+
+
+$ sudo apt-get install software-properties-common
+$ sudo apt-add-repository ppa:ansible/ansible
+$ sudo apt-get update
+$ sudo apt-get install ansible
 
 
 
-while true; do RUNTIME=$(((RANDOM % 7) * 100)) fio [un]cacheable.fio; sleep 100; done

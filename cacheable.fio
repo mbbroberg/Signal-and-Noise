@@ -1,7 +1,7 @@
 ;;;;;;;
 ; Content-based cache testing
 ; by Matt Brender @mjbrender
-; Last edited 7/30/2014
+; Last edited 8/8/2014
 ;
 ; Goal: Generate a workload that is optimal for content-based caching
 ;       such as the caching layer created by Infinio (http://infinio.com)
@@ -16,8 +16,8 @@
 ;;;;;;;
 
 [mixed cacheable]
-
-filename=/home/infinio/testing/windows7_iso
+ioengine=sync
+filename=windows7_iso
 direct=1       ; bypass OS level buffers
 
 
@@ -45,3 +45,9 @@ blocksize_range=4k:32k
 
 numjobs=10      ; Create 10 separate instances sharing same seed file
 rate_iops=2000  ; Throttle the max IOPS to ~2MB throughput
+
+
+[noisy os stuff]
+rw=randwrite
+rate_iops=30
+filename=windows7_iso2
