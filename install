@@ -1,3 +1,7 @@
+### Notes to self -- should be scripted elsewhere
+
+
+
 wget http://archive.ubuntu.com/ubuntu/pool/universe/f/fio/fio_2.1.11.orig.tar.gz
 tar -xvf
 cd

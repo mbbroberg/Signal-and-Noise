@@ -1,31 +1,30 @@
 ;;;;;;;
 ; Content-based cache testing
 ; by Matt Brender @mjbrender
-; Last edited 8/8/2014
+; Last edited 8/17/2014
 ;
 ; Goal: Generate a workload that is optimal for content-based caching
 ;       such as the caching layer created by Infinio (http://infinio.com)
 ;
-; Reason: Many workloads maintain a 65%-90% cache hit rate. This test
-;         will provide a highly cacheable workload that simulates these env.
+; Reason: When mixed with "uncacheable workloads," this maintains a 65%-90%
+;         cache hit rate. This test will provide a highly cacheable working
+;         set.
 ;
 ; Environmental notes:
-;         * Requires 'seed' file at exact location
-;         * Generates IO based on seed file
+;         * Requires 'seed' file "windows7_iso" at exact location
 ;         * Designed to be scheduled by cron or run in while loop
 ;;;;;;;
 
-[mixed cacheable]
+[global]
+
 ioengine=sync
-filename=windows7_iso
-direct=1       ; bypass OS level buffers
+filename=windows7_iso   ; seed file. Located in same directory. I named it iso but it's really just a consistent seed ~3GB.
+direct=1                ; bypass OS level buffers
+                        ; allows to properly test backend behavior.
 
-
-; ---- Run for how long? -----
-; Run with this: RUNTIME=$(((RANDOM % 7) * 100))
-; makes a random amount of minutes between 1-12
-time_based
-runtime=${RUNTIME}
+time_based              ; Run with this: RUNTIME=$(((RANDOM % 7) * 100))
+runtime=${RUNTIME}      ; makes a random amount of minutes between 1-12
+                        ; achieved through crontabs. See .bash files.
 
 ; ---- simplify output ---
 ; don't need the granular output of latencies or disk stats
@@ -36,18 +35,23 @@ disk_util=0
 group_reporting
 
 
-; ----- IO type -----
-rwmixread=90    ; IO is 90:10 R:W ratio
-randrepeat=1    ; allows for non-sequential distribution of hits
-norandommap
-blocksize_range=4k:32k
+;;;;;;;;;;;; WORKLOADS BELOW ;;;;;;;;;;;;;;;
 
 
-numjobs=10      ; Create 10 separate instances sharing same seed file
-rate_iops=2000  ; Throttle the max IOPS to ~2MB throughput
+[mixed cacheable]       ; 1st of two workloads
+rwmixread=80            ; IO is 90:10 R:W ratio
+norandommap             ; unpredictable random access, not perfect random
+rate_iops=100           ; throttle maximum IOPS to 100 (at 4k)
+numjobs=10              ; Create 10 separate instances sharing same seed file
 
+;;; Note -- seed file has been written to now. It is not inconsistent ;;;
+;   It's different across instances now, which is good for large system ;
+;   testing. Leads to growth / change / estimations being interesting   ;
+;;;;;;;
 
-[noisy os stuff]
-rw=randwrite
-rate_iops=30
-filename=windows7_iso2
+[cacheable spike]       ; 2nd of two workloads
+stonewall               ; run this workload only after [mixed] completes
+                        ; NOTE: Due to timebased, this won't always run
+rw=randread             ; pure random read across seed file
+runtime=10              ; run for only 10 seconds
+rate_iops=3000          ; burst 3000 IOPS at 4k

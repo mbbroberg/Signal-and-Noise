@@ -1,7 +1,7 @@
 ;;;;;;;
 ; Content-based cache testing
 ; by @mjbrender
-; Last edited 8/8/2014
+; Last edited 8/17/2014
 ;
 ; Goal: Generate a workload that is non-optimal for content-based caching
 ;       such as the caching layer created by Infinio (http://infinio.com)
@@ -10,21 +10,17 @@
 ;         non-optimal workloads as part of a test suite is ideal.
 ;
 ; Environmental notes:
-;         * Requires directory at exact location
-;         * Creates two 512MB files (requires 1GB free per run)
-;         * Runs for based on RUNTIME variable, defined at command call or to be scheduled by cron.
+;         * Requires 'seed' file "dataset" at exact location
+;         * Designed to be scheduled by cron or run in while loop
 ;;;;;;;
 
 [global]
 
 ioengine=sync
-direct=1
-filename=windows7_iso2
+direct=1                ; bypass OS level buffers
 
-
-; ---- Run for how long? -----
-time_based
-runtime=${RUNTIME}
+time_based              ; Run with this: RUNTIME=$(((RANDOM % 7) * 100))
+runtime=${RUNTIME}      ; makes a random amount of minutes between 1-12
 
 ; ---- simplify output ---
 ; don't need the granular output of latencies or disk stats
@@ -35,25 +31,19 @@ disk_util=0
 group_reporting
 
 
-[uncacheable read workload]
 
-; ----- IO type -----
-; Change the offset every 4th IO, making it less cacheable
-; Queue length will never get lower than 12 IO before sending read request
-; randrepeat allows for very few cache hits but not totally missing (more real)
-rate_iops=1000
-rw=randread
-randrepeat=1
-size=512m
-norandommap
-ba=1k
-blocksize_range=4k:32k
-numjobs=2
+;;;;;;;;;;;; WORKLOADS BELOW ;;;;;;;;;;;;;;;
 
+[cache eviction]
+rw=write                ; write sequentially across the file
+size=10g                ; generates a 10GB file to write into
+rate_iops=1000          ; throttle to 1000 IOPS (0 read IOPS)
+blocksize=32k           ; Each IO is 32K; Making ^ = 8000 write IOPS for cache
 
-[uncacheable write noise]
-
-; ----- IO type -----
-size=3g
-rw=randwrite
-norandommap
+[partially cacheable]
+startdelay=10           ; delay starting this second workload by 10 seconds
+rwmixread=80            ; workload is mixed read/write at 80/20
+filename=dataset        ; seed from dataset. Note that it will be written to.
+rate_iops=200           ; throttle to 200 IOPS (160 read IOPS)
+blocksize=4k            ; Each IO is 4k (default, but explicitly stating)
+ba=5k                   ; Align blocks at 5k intervals, making it less deduped
