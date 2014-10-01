@@ -26,15 +26,26 @@
 ##     Please fork and extend it!
 ##################################################
 
+#############
+# Step 1 -- Edit these based on your environment
+#############
+$DataStore = “nfs_ds1” # Name of your existing datastore to test
+$Folder = “Workloads”  # Make a folder object if you dont have one already
+$Cluster = “cluster1”  # Which cluster in the vCenter youre targeting
+		       # vCenter starts at cluster0 and iterates from there
+                       # ... I think. Verify :)
 
+#############
+# Step 2 -- Choose whats right for your needs
+############
+$NumVMs = 20                  # 20 is a good number. Total throughput of each VM is ~100 IOPS
+$VMNamePrefix = “sig_noise_”  # What name will be given and iterated upon for each workload 
 
-$NumVMs = 20
-$DataStore = “nfs_ds1”
-$VMNamePrefix = “dev-test”
-$Folder = “Workloads”
-$Template = “ubuntu-template”
-$Cluster = “cluster1”
-$OSCustSpec = “Dev-Servers”
+#############
+# No need to edit
+#############
+$Template = “workload-template” # Template name provided
+$OSCustSpec = “Dev-Servers”    
 
 #Deploy VMs
 For ($count=1;$count -le $NumVMs; $count++) {
