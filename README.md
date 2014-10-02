@@ -32,6 +32,8 @@ To ensure your tests simulate production, run S&N using fio profiles that have s
 * Familiarity with PowerCLI *(can be learned in ~1 hour)*
 
 ##### Running S&N
+* Download the [Workload OVF](http://inft.ly/3deTWSz). **This will take a while** (it's ~20GB compressed).
+* Deploy the OVF after a run, shower, coffee and [tweet](http://ctt.ec/SZca2).
 * Use `Connect-VIServer` to connect to your vCenter
 * Then, edit `Deploy-Template-Dhcp.ps1` to represent your environment
 * Next, check the `$DataStore`, `$Folder` and `$Cluster` settings in particular under Step 1 (in the script)
@@ -57,3 +59,9 @@ Every VM has [Ansible](http://docs.ansible.com/intro_getting_started.html) insta
 * [PowerCLI](https://www.vmware.com/support/developer/PowerCLI/PowerCLI55R2/powercli55r2-releasenotes.html) and [PowerShell](http://powershell.com/cs/) for deployment
 * [Ansible](http://docs.ansible.com/intro_getting_started.html) for configuration management and ad-hoc commands
 
+
+## Version 0.2.0
+TODO: 
+* Turn Workload OVF into an Ansible playbook so this doesn't suck to download
+* Write playbooks to turning I/O on and off
+* *Stretch:* Vagrantfile to run from local VM or deploy to vCenter through provisioner
