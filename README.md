@@ -21,7 +21,7 @@ You're looking to test both **scale** and **I/O type**.
 To ensure your tests simulate production, run S&N on **each cluster** you have available to test. If you do not, then you've only tested how well this product will work on a single cluster when your real storage system runs dozens of workloads from dozens of sources. The testers recommend **at least 3 VMs per host**. To simulate standalone hosts, you can run S&N using the Vagrantfile *(coming soon)*.
 
 ##### For I/O Type
-To ensure your tests simulate production, run S&N using fio profiles that have seeded content. This behavior is by design from default, but you may develop your own fio profiles or use other example profiles in a way that gets away from it. Whatever you do, **ensure your additional workloads start as seed files.** Otherwise you are generating a very diffent I/O pattern than you mean to. 
+To ensure your tests simulate production, run S&N using fio profiles that have seeded content. This behavior is by design from default, but you may develop your own fio profiles or use other example profiles in a way that gets away from it. Whatever you do, **ensure your additional workloads start as seed files.** Otherwise you are generating a very different I/O pattern then you mean to. 
 
 ## How-to
 
